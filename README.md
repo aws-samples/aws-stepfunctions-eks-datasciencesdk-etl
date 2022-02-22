@@ -45,7 +45,8 @@ The users who want to on-board this framework to execute their notebook in EKS, 
 3. If your notebooks requires any 3rd party python modules, specify them in the requirements.txt
 4. Update the config.yml file for Cluster name, Security group, Subnet Id, Instance Type and Scaling Config (Desired, Min and Max size)
 
-Note: The dataset (US States 2010 and 2020 population) used in this repo is obtained from Wikipedia - https://en.wikipedia.org/wiki/List_of_U.S._states_and_territories_by_population
+## Note
+The dataset (US States 2010 and 2020 population) used in this repo is obtained from Wikipedia - https://en.wikipedia.org/wiki/List_of_U.S._states_and_territories_by_population
 
 
 
