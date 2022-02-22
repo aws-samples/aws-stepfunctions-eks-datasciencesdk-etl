@@ -1,0 +1,85 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Resources:
+  EKSClusterRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: eks-cluster-role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - eks.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
+  EKSNodeRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: eks-node-role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+        - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+        - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+  SFNEKSExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: sfn-eks-execution-role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - eks.amazonaws.com
+                - states.amazonaws.com
+                - ec2.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Policies:
+        - PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Effect: Allow
+                Action: eks:*
+                Resource: "*"
+              -
+                Effect: Allow
+                Action: ec2:*
+                Resource: "*"
+              -
+                Effect: Allow
+                Action: ["iam:PassRole","iam:GetRole"]
+                Resource: 
+                  - !GetAtt EKSClusterRole.Arn
+                  - !GetAtt EKSNodeRole.Arn
+                  - !Sub arn:aws:iam::${AWS::AccountId}:role/aws-service-role/eks-nodegroup.amazonaws.com/AWSServiceRoleForAmazonEKSNodegroup
+              -
+                Effect: Allow
+                Action: ["iam:ListAttachedRolePolicies"]
+                Resource: "*"
+          PolicyName: sfn-eks-execution-policy
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/CloudWatchEventsFullAccess
+        - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+        - arn:aws:iam::aws:policy/AWSStepFunctionsFullAccess
+  ECRRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: 'etl-eks'
+

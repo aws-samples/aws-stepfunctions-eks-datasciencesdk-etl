@@ -1,0 +1,4 @@
+stepfunctions==2.3.0
+boto==2.49.0
+aws-sam-cli==1.37.0
+PyYAML==5.3

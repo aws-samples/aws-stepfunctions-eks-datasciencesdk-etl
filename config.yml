@@ -1,0 +1,11 @@
+ClusterName: myautocluster
+SecurityGroup: ["sg-03b923aac0c9ee176"]
+SubnetIds: [ "subnet-0827e16660193e09b", "subnet-041af465f163b7d28", "subnet-0d0caaeb83c58806e", "subnet-0faec11d59ab0709b" ]
+NodeGroupSubnetIds: ["subnet-0827e16660193e09b", "subnet-041af465f163b7d28"]
+EndpointAccess: both
+InstanceType: ["t3.medium"]
+ScalingConfig: 
+  DesiredSize: 1
+  MaxSize: 1
+  MinSize: 1
+
