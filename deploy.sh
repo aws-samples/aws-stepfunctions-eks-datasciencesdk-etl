@@ -1,3 +1,6 @@
+#!/bin/bash
+set -e
+
 # get current AWS Account ID
 ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output text)
 # get current AWS REGION to use in URLs
@@ -7,7 +10,7 @@ sam validate --template-file template.yml
 
 sam package --template-file template.yml --output-template-file packaged.yaml --force-upload --region ${REGION} --s3-bucket dev
 
-sam deploy --template-file packaged.yaml --stack-name sfn-eks-stack --region us-west-1 --no-fail-on-empty-changeset --force-upload --capabilities CAPABILITY_NAMED_IAM
+sam deploy --template-file packaged.yaml --stack-name sfn-eks-stack --region ${REGION} --no-fail-on-empty-changeset --force-upload --capabilities CAPABILITY_NAMED_IAM
 
 docker build -t etl-eks  .
 
