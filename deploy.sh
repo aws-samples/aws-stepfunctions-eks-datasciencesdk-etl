@@ -3,8 +3,15 @@ set -e
 
 # get current AWS Account ID
 ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output text)
-# get current AWS REGION to use in URLs
-REGION=$(aws configure get region)
+
+# get current AWS REGION to use from Environment variable
+if [[ ! -v AWS_DEFAULT_REGION ]]; then
+    echo "AWS_DEFAULT_REGION is not set"
+elif [[ -z "$AWS_DEFAULT_REGION" ]]; then
+    echo "AWS_DEFAULT_REGION is set to the empty string"
+else
+    REGION=$AWS_DEFAULT_REGION
+fi
 
 sam validate --template-file template.yml 
 
